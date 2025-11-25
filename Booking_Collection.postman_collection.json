@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "5e12adc0-2454-487e-b260-274ee3c98b9a",
+		"name": "Booking_Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14941275",
+		"_collection_link": "https://api-team-9059.postman.co/workspace/API_Testing_Postman~fddcba98-7cab-4f4d-b371-36c81a891816/collection/14941275-5e12adc0-2454-487e-b260-274ee3c98b9a?action=share&source=collection_link&creator=14941275"
+	},
+	"item": [
+		{
+			"name": "create_booking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"var id=jsonData.bookingid;\r",
+							"// console.log(id);\r",
+							"pm.environment.set(\"booking_id\",id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var firstName=pm.variables.replaceIn(\"{{$randomFirstName}}\");\r",
+							"//console.log(firstName);\r",
+							"pm.environment.set(\"first_name\",firstName);\r",
+							"\r",
+							"var lastName=pm.variables.replaceIn(\"{{$randomLastName}}\");\r",
+							"pm.environment.set(\"last_name\",lastName);\r",
+							"\r",
+							"var totalPrice=pm.variables.replaceIn(\"{{$randomInt}}\");\r",
+							"//console.log(typeof(totalPrice));\r",
+							"pm.environment.set(\"total_price\",totalPrice);\r",
+							"\r",
+							"var depositPaid=pm.variables.replaceIn(\"{{$randomBoolean}}\");\r",
+							"pm.environment.set(\"deposit_paid\",depositPaid);\r",
+							" \r",
+							"const check_in_date=require('moment');\r",
+							"// console.log(date().format());\r",
+							"const current_date=check_in_date();\r",
+							"// console.log(\"current\",current_date);\r",
+							"pm.environment.set(\"check_in\",current_date.format(\"YYYY-MM-DD\"));\r",
+							"\r",
+							"const check_out_date=require('moment');\r",
+							"const next_date=check_out_date();\r",
+							"// pm.environment.set(\"check_out\", next_date.add(10, \"days\").format(\"YYYY-MM-DD\"));\r",
+							"pm.environment.set(\"check_out\", next_date.add(5, 'd').format(\"YYYY-MM-DD\"));\r",
+							"\r",
+							"// const moment = require('moment');\r",
+							"\r",
+							"// const recentDate = pm.variables.replaceIn(\"{{$randomDateRecent}}\");\r",
+							"\r",
+							"// pm.environment.set(\r",
+							"//     \"check_out\",\r",
+							"//     moment(recentDate).add(5, 'days').format(\"YYYY-MM-DD\")\r",
+							"// );\r",
+							"\r",
+							"\r",
+							"var additionalNeeds=pm.variables.replaceIn(\"{{$randomDatabaseColumn}}\");\r",
+							"pm.environment.set(\"additional_needs\",additionalNeeds);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstname\": \"{{first_name}}\",\r\n    \"lastname\": \"{{last_name}}\",\r\n    \"totalprice\": {{total_price}},\r\n    \"depositpaid\": {{deposit_paid}},\r\n    \"bookingdates\": {\r\n        \"checkin\": \"{{check_in}}\",\r\n        \"checkout\": \"{{check_out}}\"\r\n    },\r\n    \"additionalneeds\": \"{{additional_needs}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/booking/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_booking",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/booking/{{booking_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{booking_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var token_no= pm.response.json().token;\r",
+							"pm.environment.set(\"token\",token_no)"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"username\":\"admin\",\r\n\"password\":\"password123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update_booking",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "token={{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"firstname\" : \"Tisha\",\r\n\t\"lastname\" : \"Akter\",\r\n\t\"totalprice\" : 111,\r\n\t\"depositpaid\" : true,\r\n\t\"bookingdates\" : {\r\n    \t\"checkin\" : \"2018-01-01\",\r\n    \t\"checkout\" : \"2019-01-01\"\r\n\t},\r\n\t\"additionalneeds\" : \"Breakfast\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/booking/{{booking_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{booking_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete_booking",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "token={{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/booking/{{booking_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{booking_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
